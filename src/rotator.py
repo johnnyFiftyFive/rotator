@@ -1,7 +1,6 @@
 import os
-from builtins import print
-from time import ctime
 from os.path import getmtime
+
 
 def remove_oldest(directory, count):
     """
@@ -16,6 +15,3 @@ def remove_oldest(directory, count):
     files.sort(key=lambda f: getmtime(f))
     for f in files[:count]:
         os.remove(f)
-
-
-
