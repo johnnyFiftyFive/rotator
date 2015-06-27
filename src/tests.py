@@ -1,7 +1,7 @@
 import os
 import unittest
 
-from rotator import remove_oldest
+from scratchrotator import remove_oldest
 
 
 class TestRotator(unittest.TestCase):
