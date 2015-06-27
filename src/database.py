@@ -1,31 +1,15 @@
+from datetime import datetime
+
 import app_config
 from sqlalchemy import create_engine, Column, Integer, String, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import scoped_session, sessionmaker
 
-class RotatorDB:
-    engine = None
-    db_session = None
-
-    def get_engine(self):
-        if not self.engine:
-            return create_engine(app_config.DATABASE_URI, convert_unicode=True, **app_config.DATABASE_CONNECT_OPTIONS)
-        return self.engine
-
-    def get_session(self):
-        if not self.db_session:
-            return scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=self.get_engine()))
-        return self.db_session
-
-    def __init__(self):
-        self.engine = self.get_engine()
-        self.db_session = self.get_session()
-        # Model.metadata.create_all(bind=self.engine)
-
+engine = create_engine(app_config.DATABASE_URI, convert_unicode=True, **app_config.DATABASE_CONNECT_OPTIONS)
+db_session = scoped_session(sessionmaker(autocommit=False, autoflush=True, bind=engine))
 
 Model = declarative_base(name='Model')
-rotatordb = RotatorDB()
-Model.query = rotatordb.get_session().query_property()
+Model.query = db_session.query_property()
 
 
 class User(Model):
@@ -50,10 +34,14 @@ class User(Model):
 class Log(Model):
     __tablename__ = 'Log'
 
+    def __init__(self, level, message):
+        self.level = level
+        self.message = message
+
     id = Column(Integer, primary_key=True)
     message = Column(String, nullable=False)
     level = Column(String, nullable=False)
-    logtime = Column(DateTime, nullable=False)
+    logtime = Column(DateTime, nullable=False, default=datetime.utcnow)
 
 
 class Backup(Model):
