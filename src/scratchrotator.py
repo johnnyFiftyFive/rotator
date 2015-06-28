@@ -1,5 +1,5 @@
 # coding=utf-8
-from database import db_session
+from rotatordb import db_session
 
 from flask import Flask
 import os

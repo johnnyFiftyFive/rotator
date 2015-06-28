@@ -1,6 +1,6 @@
 import json
 
-from database import Log, db_session
+from rotatordb import Log, db_session
 
 
 def info(message, extras=None):

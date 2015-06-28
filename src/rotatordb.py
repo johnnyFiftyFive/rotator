@@ -26,10 +26,6 @@ class User(Model):
         self.fullname = fullname
         self.password = password
 
-    def __repr__(self):
-        return "<User(name='%s', fullname='%s', password='%s')>" % (
-            self.name, self.fullname, self.password)
-
 
 class Log(Model):
     __tablename__ = 'Log'
@@ -41,7 +37,7 @@ class Log(Model):
     id = Column(Integer, primary_key=True)
     message = Column(String, nullable=False)
     level = Column(String, nullable=False)
-    logtime = Column(DateTime, nullable=False, default=datetime.utcnow)
+    logtime = Column(DateTime, nullable=False, default=datetime.now())
 
 
 class Backup(Model):
