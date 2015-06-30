@@ -48,3 +48,14 @@ class Backup(Model):
     created = Column(DateTime, nullable=False)
     logtime = Column(DateTime)
     status = Column(Integer)
+
+
+class Config(Model):
+    __tablename__ = 'Config'
+
+    name = Column(String, primary_key=True)
+    value = Column(String)
+
+    def __init__(self, name, value):
+        self.name = name
+        self.value = value

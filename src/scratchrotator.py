@@ -1,24 +1,19 @@
 # coding=utf-8
-from rotatordb import db_session
-
-from flask import Flask
 import os
 from os.path import getmtime
-from rotator import model
-
-app = Flask(__name__)
-app.config.from_object('app_config')
-
-app.register_blueprint(model.blueprint)
-
-
-@app.teardown_request
-def remove_db_session(exception):
-    db_session.remove()
-
+from rotator import app
+from rotator.keys import BACK_DB_CONFIG_KEYS
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+
+def check_db_config():
+    lacking = []
+    for k in BACK_DB_CONFIG_KEYS:
+        if not app.config.get(k):
+            lacking.append(k)
+    return lacking
 
 
 def remove_oldest(directory, count):
