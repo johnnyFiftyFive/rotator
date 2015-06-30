@@ -1,12 +1,13 @@
 # coding=utf-8
 import mysql.connector
 from rotator import app
-from rotator.keys import BACK_DB_USER, BACK_DB_PASS, BACK_DB_HOST
+from rotator.keys import BACK_DB_USER, BACK_DB_PASS, BACK_DB_HOST, BACK_DB_NAME
 
 
 def get_connection():
     try:
-        return mysql.connector.connect(user='root', password='', host='localhost', database='')
+        return mysql.connector.connect(user=app.config[BACK_DB_USER], password=app.config[BACK_DB_PASS],
+                                       host=app.config[BACK_DB_HOST])
     except mysql.connector.Error as err:
         print(u"Błąd połączenia z bazą: {}".format(err))
 
@@ -21,7 +22,7 @@ def fetch_dblist():
 
 
 def create_backup():
-    command = 'mysql dump -u {} -p{} -h {} >> back.sql' \
-        .format(app.config[BACK_DB_USER], app.config[BACK_DB_PASS], app.config[BACK_DB_HOST])
+    command = 'mysqldump -u {} -p{} -h {} {}>> back.sql' \
+        .format(app.config[BACK_DB_USER], app.config[BACK_DB_PASS], app.config[BACK_DB_HOST], app.config[BACK_DB_NAME])
     print(command)
     # os.system('mysqldump -u root -pptaszek8 poligon >> back.sql')

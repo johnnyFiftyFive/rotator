@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head lang="pl">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Rotator</title>
+    <link href="{{ url_for('static', filename='css/bootstrap.css') }}" type="text/css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/style.css') }}" type="text/css" rel="stylesheet">
+</head>
+<body>
+<div class="container center-block">
+    {% if lacking_keys and lacking_keys|length > 0 %}
+    <div class="alert alert-danger" role="alert">
+        Konfiguracja nie zawiera kluczy konfiguracyjnych:
+        {{ lacking_keys|join(', ') }}
+    </div>
+    {% endif %}
+
+    <div id="controls" class="row">
+        <div class="col-md-8 vcenter">
+            <h1>Maszyna czasu</h1>
+        </div>
+        <div class="col-md-4 text-right vcenter">
+            <button type="button" class="btn btn-primary back-btn" data-toggle="tooltip" data-placement="bottom"
+                    title="Wykonaj kopię zapasową bazy">
+                <span class="glyphicon glyphicon-save" aria-hidden="true"></span>
+                Wykonaj kopię
+            </button>
+            <button type="button" class="btn btn-default back-btn" data-toggle="tooltip" data-placement="bottom"
+                    title="Ustawienia">
+                <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+            </button>
+            <button type="button" id="logout-btn" class="btn btn-default" data-toggle="tooltip" data-placement="bottom"
+                    title="Wyloguj">
+                <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>
+            </button>
+        </div>
+    </div>
+
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th style="width: 3%"></th>
+            <th style="width: 52%">Nazwa pliku</th>
+            <th style="width: 15%">Utworzono</th>
+            <th style="width: 15%">Ostatnie przywrócenie</th>
+            <th style="width: 15%" class="text-right">Akcje</th>
+        </tr>
+        <tbody>
+        <tr>
+            <td>1</td>
+            <td>firmatec_01-08-2015-1520.sql</td>
+            <td>01-08-2015 13:45</td>
+            <td></td>
+            <td class="text-right">
+                <button type="button" class="btn btn-xs btn-warning back-btn" data-toggle="tooltip"
+                        data-placement="left"
+                        title="Przywróć wskazany stan bazy">
+                    <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span>
+                </button>
+                <button type="button" class="btn btn-xs btn-danger" data-toggle="tooltip" data-placement="right"
+                        title="Usuń kopię zapasową">
+                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                </button>
+            </td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>firmatec_01-08-2015-1520.sql</td>
+            <td>01-08-2015 13:45</td>
+            <td></td>
+            <td class="text-right">
+                <button type="button" class="btn btn-xs btn-warning" title="Przywróć wskazaną kopię zapasową">
+                    <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span>
+                </button>
+                <button type="button" class="btn btn-xs btn-danger" title="Usuń kopię zapasową">
+                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                </button>
+            </td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td>firmatec_01-08-2015-1520.sql</td>
+            <td>01-08-2015 13:45</td>
+            <td></td>
+            <td class="text-right">
+                <button type="button" class="btn btn-xs btn-warning" title="Przywróć wskazaną kopie zapasową">
+                    <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span>
+                </button>
+                <button type="button" class="btn btn-xs btn-danger" title="Usuń kopię zapasową">
+                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                </button>
+            </td>
+        </tr>
+        </tbody>
+        </thead>
+    </table>
+</div>
+<script src="{{ url_for('static', filename='js/jquery-2.1.4.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
+<script src="{{ url_for('static', filename='js/mainpage.js') }}"></script>
+</body>
+</html>

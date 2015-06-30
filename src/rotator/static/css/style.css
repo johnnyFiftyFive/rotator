@@ -1,0 +1,26 @@
+body {
+    padding: 1em 0 1em 0;
+}
+
+#controls {
+    align-items: center;
+    display: flex;
+}
+
+#controls h1 {
+    text-transform: lowercase;
+}
+
+.alert {
+    margin: 2em auto 0 auto;
+    width: 50%;
+}
+
+.link {
+    margin: 2em auto 0 auto;
+    width: 75%;
+}
+
+.link small {
+    display: block;
+}
