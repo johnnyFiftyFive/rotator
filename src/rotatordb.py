@@ -46,8 +46,13 @@ class Backup(Model):
     id = Column(Integer, primary_key=True)
     filename = Column(String, nullable=False)
     created = Column(DateTime, nullable=False)
-    logtime = Column(DateTime)
+    last_restored = Column(DateTime)
     status = Column(Integer)
+
+    def __init__(self, filename, created, status):
+        self.filename = filename
+        self.created = created
+        self.status = status
 
 
 class Config(Model):

@@ -1,7 +1,11 @@
 # coding=utf-8
+import datetime
+
+import os
 import mysql.connector
-from rotator import app
+from rotator import app, db_log
 from rotator.keys import BACK_DB_USER, BACK_DB_PASS, BACK_DB_HOST, BACK_DB_NAME
+from rotatordb import Backup, db_session
 
 
 def get_connection():
@@ -9,7 +13,7 @@ def get_connection():
         return mysql.connector.connect(user=app.config[BACK_DB_USER], password=app.config[BACK_DB_PASS],
                                        host=app.config[BACK_DB_HOST])
     except mysql.connector.Error as err:
-        print(u"Błąd połączenia z bazą: {}".format(err))
+        db_log.error('Blad polaczenia z baza.', dict(error=err))
 
 
 def fetch_dblist():
@@ -21,8 +25,23 @@ def fetch_dblist():
     connection.close()
 
 
+def gen_filename(dbname):
+    time = datetime.datetime.now().strftime('%H:%M:%S_%d.%m.%Y')
+    name = 'back_{}_{}.sql'.format(dbname, time)
+    return name, time
+
+
 def create_backup():
-    command = 'mysqldump -u {} -p{} -h {} {}>> back.sql' \
+    (filename, ctime) = gen_filename(app.config[BACK_DB_NAME])
+    command = 'mysqldump -u {} -p{} -h {} {} > back.sql' \
         .format(app.config[BACK_DB_USER], app.config[BACK_DB_PASS], app.config[BACK_DB_HOST], app.config[BACK_DB_NAME])
-    print(command)
-    # os.system('mysqldump -u root -pptaszek8 poligon >> back.sql')
+
+    result = os.system('command')
+    if result == 0:
+        db_log.info('Wykonano zrzut bazy', dict(command=command, filename=filename))
+        back_info = Backup(filename, ctime, result)
+        db_session.add(back_info)
+        db_session.commit()
+    else:
+        db_log.error('Błąd przy wykonywaniu zrzutu.', dict(command=command, errCode=result))
+    return result
