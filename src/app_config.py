@@ -2,7 +2,7 @@ import os
 
 _basedir = os.path.abspath(os.path.dirname(__file__))
 
-DEBUG = False
+DEBUG = True
 
 SECRET_KEY = '_JurekOwsiak#1994'
 DATABASE_URI = 'sqlite:///' + os.path.join(_basedir, 'rotator.db')

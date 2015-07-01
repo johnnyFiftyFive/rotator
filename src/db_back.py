@@ -10,7 +10,8 @@ from rotatordb import Backup, db_session
 
 def get_connection():
     try:
-        return mysql.connector.connect(user=app.config[BACK_DB_USER], password=app.config[BACK_DB_PASS],
+        return mysql.connector.connect(user=app.config[BACK_DB_USER],
+                                       password=app.config[BACK_DB_PASS],
                                        host=app.config[BACK_DB_HOST])
     except mysql.connector.Error as err:
         db_log.error('Blad polaczenia z baza.', dict(error=err))
@@ -26,22 +27,28 @@ def fetch_dblist():
 
 
 def gen_filename(dbname):
-    time = datetime.datetime.now().strftime('%H:%M:%S_%d.%m.%Y')
-    name = 'back_{}_{}.sql'.format(dbname, time)
+    time = datetime.datetime.now()
+    name = 'back_{}_{}.sql'.format(dbname, time.strftime('%H%M_%d.%m.%Y'))
     return name, time
 
 
 def create_backup():
     (filename, ctime) = gen_filename(app.config[BACK_DB_NAME])
-    command = 'mysqldump -u {} -p{} -h {} {} > back.sql' \
-        .format(app.config[BACK_DB_USER], app.config[BACK_DB_PASS], app.config[BACK_DB_HOST], app.config[BACK_DB_NAME])
-
-    result = os.system('command')
+    command = 'mysqldump -u {} -p{} -h {} {} > backups/{}' \
+        .format(app.config[BACK_DB_USER], app.config[BACK_DB_PASS],
+                app.config[BACK_DB_HOST], app.config[BACK_DB_NAME], filename)
+    start = datetime.datetime.now()
+    result = os.system(command)
+    end = datetime.datetime.now()
+    diff = end - start
+    size = os.path.getsize('backups/' + filename) / 1024.0 / 1024.0
     if result == 0:
-        db_log.info('Wykonano zrzut bazy', dict(command=command, filename=filename))
+        metrics = dict(command=command, filename=filename,
+                       elapsedTime=diff.total_seconds(), filesize='{0:.3f}'.format(round(size, 3)))
+        db_log.info('Wykonano zrzut bazy', metrics)
         back_info = Backup(filename, ctime, result)
         db_session.add(back_info)
         db_session.commit()
     else:
-        db_log.error('Błąd przy wykonywaniu zrzutu.', dict(command=command, errCode=result))
+        db_log.error(u'Błąd przy wykonywaniu zrzutu.', dict(command=command, errCode=result))
     return result

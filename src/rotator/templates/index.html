@@ -9,7 +9,7 @@
     <link href="{{ url_for('static', filename='css/style.css') }}" type="text/css" rel="stylesheet">
 </head>
 <body>
-<div class="container center-block">
+<div id="main-container" class="container center-block">
     {% if lacking_keys and lacking_keys|length > 0 %}
     <div class="alert alert-danger" role="alert">
         Konfiguracja nie zawiera kluczy konfiguracyjnych:
@@ -17,20 +17,42 @@
     </div>
     {% endif %}
 
+    {% with statuses = get_flashed_messages(category_filter=["error"]) %}
+    {% for s in statuses %}
+    <div class="alert alert-warning" role="alert"><strong>Nie można usunąć pliku {{s}}.</strong> Wezwij swojego
+        dyżurnego inżyniera.
+    </div>
+    {% endfor %}
+    {% endwith %}
+
+    {% with statuses = get_flashed_messages(category_filter=["status"]) %}
+    {% for s in statuses %}
+    {% if s == 0 %}
+    <div class="alert alert-success" role="alert"><strong>Wszystko ok!</strong> Kopia wykonana.</div>
+    {% else %}
+    <div class="alert alert-warning" role="alert"><strong>Kopia</strong> Poinformuj swojego dobrze wyszkolonego
+        inżyniera aby zbadał problem.
+    </div>
+    {% endif %}
+    {% endfor %}
+    {% endwith %}
+
     <div id="controls" class="row">
         <div class="col-md-8 vcenter">
             <h1>Maszyna czasu</h1>
         </div>
         <div class="col-md-4 text-right vcenter">
-            <button type="button" class="btn btn-primary back-btn" data-toggle="tooltip" data-placement="bottom"
-                    title="Wykonaj kopię zapasową bazy">
-                <span class="glyphicon glyphicon-save" aria-hidden="true"></span>
-                Wykonaj kopię
-            </button>
-            <button type="button" class="btn btn-default back-btn" data-toggle="tooltip" data-placement="bottom"
-                    title="Ustawienia">
-                <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
-            </button>
+            <a href="{{ url_for('model.do_backup') }}">
+                <button type="button" class="btn btn-primary back-btn" data-toggle="tooltip" data-placement="bottom"
+                        title="Wykonaj kopię zapasową bazy">
+                    <span class="glyphicon glyphicon-save" aria-hidden="true"></span>
+                    Wykonaj kopię
+                </button>
+            </a>
+            <!-- <button type="button" class="btn btn-default back-btn" data-toggle="tooltip" data-placement="bottom"
+                     title="Ustawienia">
+                 <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+             </button>-->
             <button type="button" id="logout-btn" class="btn btn-default" data-toggle="tooltip" data-placement="bottom"
                     title="Wyloguj">
                 <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>
@@ -42,57 +64,32 @@
         <thead>
         <tr>
             <th style="width: 3%"></th>
-            <th style="width: 52%">Nazwa pliku</th>
-            <th style="width: 15%">Utworzono</th>
+            <th style="width: 45%">Nazwa pliku</th>
+            <th style="width: 23%">Utworzono</th>
             <th style="width: 15%">Ostatnie przywrócenie</th>
             <th style="width: 15%" class="text-right">Akcje</th>
         </tr>
         <tbody>
+        {% for entry in entries %}
         <tr>
-            <td>1</td>
-            <td>firmatec_01-08-2015-1520.sql</td>
-            <td>01-08-2015 13:45</td>
-            <td></td>
+            <td>{{ loop.index }}</td>
+            <td>{{ entry.filename }}</td>
+            <td>{{ entry.created }}</td>
+            <td>{{ entry.last_restored }}</td>
             <td class="text-right">
                 <button type="button" class="btn btn-xs btn-warning back-btn" data-toggle="tooltip"
-                        data-placement="left"
+                        data-placement="left" data-backid="{{ entry.id }}"
                         title="Przywróć wskazany stan bazy">
                     <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span>
                 </button>
-                <button type="button" class="btn btn-xs btn-danger" data-toggle="tooltip" data-placement="right"
-                        title="Usuń kopię zapasową">
+                <button type="button" class="btn btn-xs btn-danger btn-delete" data-toggle="tooltip"
+                        data-placement="right"
+                        title="Usuń kopię zapasową" data-backid="{{ entry.id }}">
                     <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
                 </button>
             </td>
         </tr>
-        <tr>
-            <td>2</td>
-            <td>firmatec_01-08-2015-1520.sql</td>
-            <td>01-08-2015 13:45</td>
-            <td></td>
-            <td class="text-right">
-                <button type="button" class="btn btn-xs btn-warning" title="Przywróć wskazaną kopię zapasową">
-                    <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span>
-                </button>
-                <button type="button" class="btn btn-xs btn-danger" title="Usuń kopię zapasową">
-                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-                </button>
-            </td>
-        </tr>
-        <tr>
-            <td>3</td>
-            <td>firmatec_01-08-2015-1520.sql</td>
-            <td>01-08-2015 13:45</td>
-            <td></td>
-            <td class="text-right">
-                <button type="button" class="btn btn-xs btn-warning" title="Przywróć wskazaną kopie zapasową">
-                    <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span>
-                </button>
-                <button type="button" class="btn btn-xs btn-danger" title="Usuń kopię zapasową">
-                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-                </button>
-            </td>
-        </tr>
+        {% endfor %}
         </tbody>
         </thead>
     </table>

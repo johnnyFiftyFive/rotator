@@ -5,7 +5,7 @@ from rotator import app
 from rotator.keys import BACK_DB_CONFIG_KEYS
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
 
 
 def check_db_config():

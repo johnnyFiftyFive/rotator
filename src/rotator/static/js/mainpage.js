@@ -10,10 +10,32 @@ $(function () {
 });
 
 $("#logout-btn").click(function () {
-    $.get("http://log:out@localhost:5000");
+    $.get("http://log:out@" + window.location.host);
     location.reload(true);
 });
 
+$(".btn-delete").click(function () {
+    var backId = $(this).data('backid');
+    var parent = $(this).closest("tr");
+    $.post("http://" + window.location.host + "/delete/" + backId, function (data) {
+        data = JSON.parse(data);
+        if (data.status == "ok") {
+            parent.remove();
+            var alrt = document.createElement("div");
+            alrt.className = "alert alert-success";
+            $(alrt).attr("role", "alert");
+            alrt.innerHTML = "<strong>Udało się!</strong> Plik usunięty."
+            $("#main-container").prepend(alrt);
+        } else {
+            var alrt = document.createElement("div");
+            alrt.className = "alert alert-warning";
+            $(alrt).attr("role", "alert");
+            alrt.innerHTML = "<strong>Nie można usunąć pliku: " + data.file + "!</strong>."
+            $("#main-container").prepend(alrt);
+        }
+    });
+
+});
 
 //$(document).on("click", ".open-editLinkDialog", function () {
 //    var linkId = $(this).data('id');
