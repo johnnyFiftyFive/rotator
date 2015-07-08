@@ -31,13 +31,7 @@ def landing():
 @blueprint.route('/do_backup')
 @requires_auth
 def do_backup():
-    connection = db_back.get_connection()
-    back_status = -1
-    if not connection or not connection.is_connected():
-        db_log.error('Brak polaczenia z baza.', dict(connection_info=str(connection)))
-        back_status = 99
-    else:
-        back_status = create_backup()
+    back_status = create_backup()
     flash(back_status, category='status')
     return redirect(url_for('model.landing'))
 

@@ -33,6 +33,11 @@ def gen_filename(dbname):
 
 
 def create_backup():
+    connection = get_connection()
+    if not connection or not connection.is_connected():
+        db_log.error('Brak polaczenia z baza.', dict(connection_info=str(connection)))
+        return 99
+
     (filename, ctime) = gen_filename(app.config[BACK_DB_NAME])
     command = 'mysqldump -u {} -p{} -h {} {} > backups/{}' \
         .format(app.config[BACK_DB_USER], app.config[BACK_DB_PASS],
