@@ -6,4 +6,4 @@ def execution_listener(event):
 
 
 def error_listener(event):
-    db_log.error('Blad przy wykonywaniu zaplanowego zadania', dict(job_id=event.job_id), exception=event.exception)
+    db_log.error('Blad przy wykonywaniu zaplanowego zadania', dict(job_id=event.job_id, exception=event.exception))
