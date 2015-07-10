@@ -38,14 +38,14 @@ $(".btn-delete").click(function () {
 });
 
 %(".open-settingsModal").click(function () {
-    $.post("http://" + window.location.host + "/settings/", function (data) {
+    $.post("http://" + window.location.host + "/settings", function (data) {
 
     });
 });
 
 $("#confirmBtn").click(function () {
     $.ajax({
-        url: '/settings/',
+        url: '/settings',
         type: 'PUT',
         data: 'data',
         success: function(result) {
