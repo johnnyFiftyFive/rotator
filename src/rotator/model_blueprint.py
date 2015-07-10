@@ -2,7 +2,6 @@ import json
 
 import os
 from db_back import create_backup
-import db_back
 from flask import render_template, Blueprint, url_for, flash
 from rotator import db_log
 from rotator.auth import requires_auth
@@ -12,7 +11,6 @@ from scratchrotator import check_db_config
 from werkzeug.utils import redirect
 
 blueprint = Blueprint('model', 'model')
-
 
 def gather_backups():
     return db_session.query(Backup).filter(Backup.status != 255).order_by(Backup.created.desc()).all();

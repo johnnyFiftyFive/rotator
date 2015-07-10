@@ -37,18 +37,22 @@ $(".btn-delete").click(function () {
 
 });
 
-//$(document).on("click", ".open-editLinkDialog", function () {
-//    var linkId = $(this).data('id');
-//    var parent = $(this).parent();
-//    var linkHref = parent.find("#link-" + linkId + "-itm");
-//    $("#link-title").val(linkHref.text());
-//    $("#link-address").val(linkHref.attr("href"));
-//    $("#confirmBtn").val(linkId);
-//});
-//
-//$("#confirmBtn").click(function () {
-//
-//});
+%(".open-settingsModal").click(function () {
+    $.post("http://" + window.location.host + "/settings/", function (data) {
+
+    });
+});
+
+$("#confirmBtn").click(function () {
+    $.ajax({
+        url: '/settings/',
+        type: 'PUT',
+        data: 'data',
+        success: function(result) {
+
+        }
+    });
+});
 //
 //function deleteItem(id) {
 //    $.post("/delete/" + id);
