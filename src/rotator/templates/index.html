@@ -49,14 +49,19 @@
                     Wykonaj kopię
                 </button>
             </a>
-            <!-- <button type="button" class="btn btn-default back-btn" data-toggle="tooltip" data-placement="bottom"
-                     title="Ustawienia">
-                 <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
-             </button>-->
-            <button type="button" id="logout-btn" class="btn btn-default" data-toggle="tooltip" data-placement="bottom"
-                    title="Wyloguj">
-                <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>
+            <button type="button" class="btn btn-default back-btn" data-toggle="modal" data-placement="bottom"
+                    data-target="#linkEditModal">
+                <span class="glyphicon glyphicon-wrench" aria-hidden="true" data-toggle="tooltip" title="Ustawienia"
+                      data-placement="top"></span>
             </button>
+            <button type="button" class="btn btn-default btn-xs pull-right open-editLinkDialog" data-id="{{ entry.id }}"
+                    data-toggle="modal"
+                    data-target="#settings-modal">
+                <button type="button" id="logout-btn" class="btn btn-default" data-toggle="tooltip"
+                        data-placement="bottom"
+                        title="Wyloguj">
+                    <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>
+                </button>
         </div>
     </div>
 
@@ -94,6 +99,64 @@
         </thead>
     </table>
 </div>
+
+<div class="modal fade" id="settings-modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="modalLabel">Ustawienia</h4>
+            </div>
+            <div class="modal-body">
+                <h5>Baza danych</h5>
+
+                <div class="row">
+                    <div class="col-md-2">
+                        Host:
+                    </div>
+                    <div class="col-md-4">
+                        <input type="text" id="db-host" class="form-control input-md" placeholder="0.0.0.0"/>
+                    </div>
+                    <div class="col-md-2">
+                        Port:
+                    </div>
+                    <div class="col-md-4">
+                        <input type="text" id="db-port" class="form-control input-md" placeholder="3306"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">
+                        Użytkownik
+                    </div>
+                    <div class="col-md-4">
+                        <input type="text" id="db-user" class="form-control input-md" placeholder="root"/>
+                    </div>
+                    <div class="col-md-4">
+                        <input type="password" id="db-pass" class="form-control input-md" placeholder="hasło"/>
+                    </div>
+                </div>
+                <h5>Kopie automatyczne</h5>
+
+                <div class="row">
+                    <div class="col-md-2">
+                        Host:
+                    </div>
+                    <div class="col-md-4">
+                        <input type="time" id="sched_time" class="form-control input-md" value="12:00"/>
+                    </div>
+                    <div class="col-md-6">
+                        Port:
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Anuluj</button>
+                <button type="button" id="confirmBtn" class="btn btn-primary">Zapisz</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="{{ url_for('static', filename='js/jquery-2.1.4.js') }}"></script>
 <script src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
 <script src="{{ url_for('static', filename='js/mainpage.js') }}"></script>
