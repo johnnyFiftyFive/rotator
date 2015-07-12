@@ -1,5 +1,6 @@
 # coding=utf-8
 import datetime
+import subprocess
 
 import os
 import mysql.connector
@@ -9,13 +10,18 @@ from rotatordb import Backup, db_session
 
 
 def get_connection():
+    ping_response = subprocess.Popen(["ping", app.config[BACK_DB_HOST], "-n", '1'],
+                                     stdout=subprocess.PIPE).stdout.read()
+    if 'unreachable' in ping_response:
+        db_log.error('Host nieosiągaln.')
+        return None
     try:
         connection = mysql.connector.connect(user=app.config[BACK_DB_USER],
-                                       password=app.config[BACK_DB_PASS],
-                                       host=app.config[BACK_DB_HOST])
+                                             password=app.config[BACK_DB_PASS],
+                                             host=app.config[BACK_DB_HOST])
         return connection
     except mysql.connector.Error as err:
-        db_log.error('Blad polaczenia z baza.', dict(error=err))
+        db_log.error('Blad polaczenia z baza.', dict(error=err.errno))
 
 
 def fetch_dblist():
