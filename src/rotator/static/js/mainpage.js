@@ -37,7 +37,7 @@ $(".btn-delete").click(function () {
 
 });
 
-%(".open-settingsModal").click(function () {
+$(".open-settingsModal").click(function () {
     $.post("http://" + window.location.host + "/settings", function (data) {
 
     });

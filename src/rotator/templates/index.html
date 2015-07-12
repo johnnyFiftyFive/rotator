@@ -49,19 +49,17 @@
                     Wykonaj kopię
                 </button>
             </a>
-            <button type="button" class="btn btn-default back-btn" data-toggle="modal" data-placement="bottom"
-                    data-target="#linkEditModal">
+            <button type="button" class="btn btn-default back-btn open-settingsModal" data-toggle="modal"
+                    data-placement="bottom"
+                    data-target="#settings-modal">
                 <span class="glyphicon glyphicon-wrench" aria-hidden="true" data-toggle="tooltip" title="Ustawienia"
                       data-placement="top"></span>
             </button>
-            <button type="button" class="btn btn-default btn-xs pull-right open-settingsModal" data-id="{{ entry.id }}"
-                    data-toggle="modal"
-                    data-target="#settings-modal">
-                <button type="button" id="logout-btn" class="btn btn-default" data-toggle="tooltip"
-                        data-placement="bottom"
-                        title="Wyloguj">
-                    <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>
-                </button>
+            <button type="button" id="logout-btn" class="btn btn-default" data-toggle="tooltip"
+                    data-placement="bottom"
+                    title="Wyloguj">
+                <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>
+            </button>
         </div>
     </div>
 
@@ -108,9 +106,10 @@
                 <h4 class="modal-title" id="modalLabel">Ustawienia</h4>
             </div>
             <div class="modal-body">
+                {% if 1==0 %}
                 <h5>Baza danych</h5>
 
-                <div class="row">
+                <div class="row display-table">
                     <div class="col-md-2">
                         Host:
                     </div>
@@ -124,29 +123,31 @@
                         <input type="text" id="db-port" class="form-control input-md" placeholder="3306"/>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row display-table">
                     <div class="col-md-2">
-                        Użytkownik
+                        Użytkownik:
                     </div>
                     <div class="col-md-4">
                         <input type="text" id="db-user" class="form-control input-md" placeholder="root"/>
+                    </div>
+                    <div class="col-md-2">
+                        Hasło:
                     </div>
                     <div class="col-md-4">
                         <input type="password" id="db-pass" class="form-control input-md" placeholder="hasło"/>
                     </div>
                 </div>
+                {% endif %}
                 <h5>Kopie automatyczne</h5>
 
-                <div class="row">
+                <div class="row display-table">
                     <div class="col-md-2">
-                        Host:
+                        Godzina:
                     </div>
                     <div class="col-md-4">
                         <input type="time" id="sched_time" class="form-control input-md" value="12:00"/>
                     </div>
-                    <div class="col-md-6">
-                        Port:
-                    </div>
+                    <div class="col-md-6"></div>
                 </div>
             </div>
             <div class="modal-footer">

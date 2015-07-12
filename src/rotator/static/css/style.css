@@ -25,3 +25,10 @@ body {
 .link small {
     display: block;
 }
+
+.display-table {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+

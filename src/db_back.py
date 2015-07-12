@@ -10,9 +10,10 @@ from rotatordb import Backup, db_session
 
 def get_connection():
     try:
-        return mysql.connector.connect(user=app.config[BACK_DB_USER],
+        connection = mysql.connector.connect(user=app.config[BACK_DB_USER],
                                        password=app.config[BACK_DB_PASS],
                                        host=app.config[BACK_DB_HOST])
+        return connection
     except mysql.connector.Error as err:
         db_log.error('Blad polaczenia z baza.', dict(error=err))
 

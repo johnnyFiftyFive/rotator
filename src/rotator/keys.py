@@ -7,6 +7,4 @@ BACK_DB_CONFIG_KEYS = (BACK_DB_HOST, BACK_DB_USER, BACK_DB_PORT, BACK_DB_PASS, B
 
 SCHED_MINUTE = 'sched_minutes'
 SCHED_HOUR = 'sched_hour'
-SCHED_JOBID = 'back_schedule'
-
-
+SCHED_JOBID = 'sched_jobid'
