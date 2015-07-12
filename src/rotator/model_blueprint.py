@@ -1,16 +1,17 @@
 import json
 
-import os
 from db_back import create_backup
+import db_back
 from flask import render_template, Blueprint, url_for, flash
-from rotator import db_log
+from rotator import app
 from rotator.auth import requires_auth
 from rotator.db_log import error
+from rotator.keys import BACK_DB_CONFIG_KEYS
 from rotatordb import db_session, Backup
-from scratchrotator import check_db_config
 from werkzeug.utils import redirect
 
 blueprint = Blueprint('model', 'model')
+
 
 def gather_backups():
     return db_session.query(Backup).filter(Backup.status != 255).order_by(Backup.created.desc()).all();
@@ -37,17 +38,13 @@ def do_backup():
 @blueprint.route('/delete/<int:back_id>', methods=['POST'])
 @requires_auth
 def delete(back_id):
-    back = db_session.query(Backup).filter(Backup.id == back_id).first()
-    back.status = 255
-    resp = dict(status='ok')
-    try:
-        os.remove('backups/{}'.format(back.filename))
-        db_log.info('Usunieto plik kopii', dict(file=back.filename))
-    except Exception as err:
-        resp['status'] = 'error'
-        resp['filename'] = back.filename
-        db_log.error('Nie mozna usunac pliku', dict(file=back.filename, error=err.message))
-    if resp['status'] == 'ok':
-        db_session.merge(back)
-        db_session.commit()
+    resp = db_back.delete(back_id)
     return json.dumps(resp)
+
+
+def check_db_config():
+    lacking = []
+    for k in BACK_DB_CONFIG_KEYS:
+        if not app.config.get(k):
+            lacking.append(k)
+    return lacking

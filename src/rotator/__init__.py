@@ -10,16 +10,15 @@ from rotator import db_config
 
 app.config.update(db_config.load_config())
 
-import db_back
+from db_back import create_backup
 
-scheduler.add_job(db_back.create_backup, 'cron',
+scheduler.add_job(create_backup, 'cron',
                   hour=int(app.config[SCHED_HOUR]),
                   minute=int(app.config[SCHED_MINUTE]),
                   id=app.config[SCHED_JOBID])
 scheduler.start()
 
 from rotator import model_blueprint
-
 app.register_blueprint(model_blueprint.blueprint)
 
 from rotatordb import db_session
