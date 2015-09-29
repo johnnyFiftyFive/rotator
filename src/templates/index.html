@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head lang="pl">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Rotator</title>
+    <link href="{{ url_for('static', filename='css/bootstrap.css') }}" type="text/css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/style.css') }}" type="text/css" rel="stylesheet">
+</head>
+<body>
+<div id="main-container" class="container center-block">
+    {% if lacking_keys and lacking_keys|length > 0 %}
+    <div class="alert alert-danger" role="alert">
+        Konfiguracja nie zawiera kluczy konfiguracyjnych:
+        {{ lacking_keys|join(', ') }}
+    </div>
+    {% endif %}
+
+    {% with statuses = get_flashed_messages(category_filter=["error"]) %}
+    {% for s in statuses %}
+    <div class="alert alert-warning" role="alert"><strong>Nie można usunąć pliku {{s}}.</strong> Wezwij swojego
+        dyżurnego inżyniera.
+    </div>
+    {% endfor %}
+    {% endwith %}
+
+    {% with statuses = get_flashed_messages(category_filter=["status"]) %}
+    {% for s in statuses %}
+    {% if s == 0 %}
+    <div class="alert alert-success" role="alert"><strong>Wszystko ok!</strong> Kopia wykonana.</div>
+    {% else %}
+    <div class="alert alert-warning" role="alert"><strong>Błąd</strong> Poinformuj swojego dobrze wyszkolonego
+        inżyniera aby zbadał problem.
+    </div>
+    {% endif %}
+    {% endfor %}
+    {% endwith %}
+
+    <div id="controls" class="row">
+        <div class="col-md-8 vcenter">
+            <h1>Maszyna czasu</h1>
+        </div>
+        <div class="col-md-4 text-right vcenter">
+            <a href="{{ url_for('model.do_backup') }}">
+                <button type="button" class="btn btn-primary back-btn" data-toggle="tooltip" data-placement="bottom"
+                        title="Wykonaj kopię zapasową bazy">
+                    <span class="glyphicon glyphicon-save" aria-hidden="true"></span>
+                    Wykonaj kopię
+                </button>
+            </a>
+            <button type="button" class="btn btn-default back-btn open-settingsModal" data-toggle="modal"
+                    data-placement="bottom"
+                    data-target="#settings-modal">
+                <span class="glyphicon glyphicon-wrench" aria-hidden="true" data-toggle="tooltip" title="Ustawienia"
+                      data-placement="top"></span>
+            </button>
+            <button type="button" id="logout-btn" class="btn btn-default" data-toggle="tooltip"
+                    data-placement="bottom"
+                    title="Wyloguj">
+                <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>
+            </button>
+        </div>
+    </div>
+
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th style="width: 3%"></th>
+            <th style="width: 45%">Nazwa pliku</th>
+            <th style="width: 23%">Utworzono</th>
+            <th style="width: 15%">Ostatnie przywrócenie</th>
+            <th style="width: 15%" class="text-right">Akcje</th>
+        </tr>
+        <tbody>
+        {% for entry in entries %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ entry.filename }}</td>
+            <td>{{ entry.created }}</td>
+            <td>{{ entry.last_restored }}</td>
+            <td class="text-right">
+                <button type="button" class="btn btn-xs btn-warning back-btn" data-toggle="tooltip"
+                        data-placement="left" data-backid="{{ entry.id }}"
+                        title="Przywróć wskazany stan bazy">
+                    <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span>
+                </button>
+                <button type="button" class="btn btn-xs btn-danger btn-delete" data-toggle="tooltip"
+                        data-placement="right"
+                        title="Usuń kopię zapasową" data-backid="{{ entry.id }}">
+                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                </button>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+        </thead>
+    </table>
+</div>
+
+<div class="modal fade" id="settings-modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="modalLabel">Ustawienia</h4>
+            </div>
+            <div class="modal-body">
+                {% if 1==0 %}
+                <h5>Baza danych</h5>
+
+                <div class="row display-table">
+                    <div class="col-md-2">
+                        Host:
+                    </div>
+                    <div class="col-md-4">
+                        <input type="text" id="db-host" class="form-control input-md" placeholder="0.0.0.0"/>
+                    </div>
+                    <div class="col-md-2">
+                        Port:
+                    </div>
+                    <div class="col-md-4">
+                        <input type="text" id="db-port" class="form-control input-md" placeholder="3306"/>
+                    </div>
+                </div>
+                <div class="row display-table">
+                    <div class="col-md-2">
+                        Użytkownik:
+                    </div>
+                    <div class="col-md-4">
+                        <input type="text" id="db-user" class="form-control input-md" placeholder="root"/>
+                    </div>
+                    <div class="col-md-2">
+                        Hasło:
+                    </div>
+                    <div class="col-md-4">
+                        <input type="password" id="db-pass" class="form-control input-md" placeholder="hasło"/>
+                    </div>
+                </div>
+                {% endif %}
+                <h5>Kopie automatyczne</h5>
+
+                <div class="row display-table">
+                    <div class="col-md-2">
+                        Godzina:
+                    </div>
+                    <div class="col-md-4">
+                        <input type="time" id="sched_time" class="form-control input-md" value="12:00"/>
+                    </div>
+                    <div class="col-md-6"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Anuluj</button>
+                <button type="button" id="confirmBtn" class="btn btn-primary">Zapisz</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/jquery.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
+<script src="{{ url_for('static', filename='js/mainpage.js') }}"></script>
+</body>
+</html>
