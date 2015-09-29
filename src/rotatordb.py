@@ -5,7 +5,8 @@ from sqlalchemy import create_engine, Column, Integer, String, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import scoped_session, sessionmaker
 
-engine = create_engine(app_config.DATABASE_URI, convert_unicode=True, **app_config.DATABASE_CONNECT_OPTIONS)
+engine = create_engine(app_config.config.DATABASE_URI, convert_unicode=True,
+                       **app_config.config.DATABASE_CONNECT_OPTIONS)
 db_session = scoped_session(sessionmaker(autocommit=False, autoflush=True, bind=engine))
 
 Model = declarative_base(name='Model')

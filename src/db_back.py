@@ -3,24 +3,22 @@ import datetime
 import subprocess
 
 import os
-from os.path import getmtime
 import mysql.connector
-from rotator import db_log
-from rotator.keys import BACK_DB_USER, BACK_DB_PASS, BACK_DB_HOST, BACK_DB_NAME
+import db_log
+from app_config import config
 from rotatordb import Backup, db_session
-from starter import app
 
 
 def get_connection():
-    ping_response = subprocess.Popen(["ping", app.config[BACK_DB_HOST], "-n", '1'],
+    ping_response = subprocess.Popen(["ping", config.BACK_DBHOST, "-n", '1'],
                                      stdout=subprocess.PIPE).stdout.read()
     if 'unreachable' in ping_response:
         db_log.error('Host nieosiągaln.')
         return None
     try:
-        connection = mysql.connector.connect(user=app.config[BACK_DB_USER],
-                                             password=app.config[BACK_DB_PASS],
-                                             host=app.config[BACK_DB_HOST])
+        connection = mysql.connector.connect(user=config.BACK_DB_USER,
+                                             password=config.BACK_DBPASS,
+                                             host=config.BACK_DBHOST)
         return connection
     except mysql.connector.Error as err:
         db_log.error('Blad polaczenia z baza.', dict(error=err.errno))
@@ -47,10 +45,10 @@ def create_backup():
         db_log.error('Brak polaczenia z baza.', dict(connection_info=str(connection)))
         return 99
 
-    (filename, ctime) = gen_filename(app.config[BACK_DB_NAME])
+    (filename, ctime) = gen_filename(config.BACK_DBNAME)
     command = 'mysqldump -u {} -p{} -h {} {} > backups/{}' \
-        .format(app.config[BACK_DB_USER], app.config[BACK_DB_PASS],
-                app.config[BACK_DB_HOST], app.config[BACK_DB_NAME], filename)
+        .format(config.BACK_DBUSER, config.BACK_DBPASS,
+                config.BACK_DBHOST, config.BACK_DBNAME, filename)
     start = datetime.datetime.now()
     result = os.system(command)
     end = datetime.datetime.now()
@@ -95,6 +93,6 @@ def remove_oldest(directory, count):
     files = os.listdir(directory)
     if len(files) < count:
         return
-    files.sort(key=lambda f: getmtime(f))
+    files.sort(key=lambda f: os.path.getmtime(f))
     for f in files[:count]:
         os.remove(f)
