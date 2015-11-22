@@ -6,11 +6,11 @@ from keys import SCHED_HOUR, SCHED_MINUTE, SCHED_JOBID
 from schedule.listeners import execution_listener
 from schedule.listeners import error_listener
 from db_back import create_backup
+import model_blueprint
+import db_config
 
 app = Flask(__name__)
 app.config.from_object('app_config.config')
-
-import db_config
 
 app.config.update(db_config.load_config())
 
@@ -23,8 +23,7 @@ scheduler.add_job(create_backup, 'cron',
                   id=app.config[SCHED_JOBID])
 scheduler.start()
 
-import model_blueprint
-
+scheduler.get_jobs()
 app.register_blueprint(model_blueprint.blueprint)
 
 from rotatordb import db_session
@@ -34,5 +33,6 @@ from rotatordb import db_session
 def remove_db_session(exception):
     db_session.remove()
 
+
 if __name__ == '__main__':
-    app.run()
+    app.run(host='0.0.0.0')

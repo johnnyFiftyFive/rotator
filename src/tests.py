@@ -1,6 +1,6 @@
-import os
 import unittest
 
+import os
 from scratchrotator import remove_oldest
 
 

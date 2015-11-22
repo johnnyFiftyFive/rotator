@@ -10,13 +10,12 @@ from rotatordb import Backup, db_session
 
 
 def get_connection():
-    ping_response = subprocess.Popen(["ping", config.BACK_DBHOST, "-n", '1'],
+    ping_response = subprocess.Popen(["ping", config.BACK_DBHOST, "-c", '1'],
                                      stdout=subprocess.PIPE).stdout.read()
     if 'unreachable' in ping_response:
-        db_log.error('Host nieosiągaln.')
         return None
     try:
-        connection = mysql.connector.connect(user=config.BACK_DB_USER,
+        connection = mysql.connector.connect(user=config.BACK_DBUSER,
                                              password=config.BACK_DBPASS,
                                              host=config.BACK_DBHOST)
         return connection
@@ -44,7 +43,7 @@ def create_backup():
     if not connection or not connection.is_connected():
         db_log.error('Brak polaczenia z baza.', dict(connection_info=str(connection)))
         return 99
-
+    db_log.info('Tworzenie kopii rozpoczete')
     (filename, ctime) = gen_filename(config.BACK_DBNAME)
     command = 'mysqldump -u {} -p{} -h {} {} > backups/{}' \
         .format(config.BACK_DBUSER, config.BACK_DBPASS,

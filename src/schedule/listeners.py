@@ -1,5 +1,6 @@
 import db_log
 
+
 def execution_listener(event):
     db_log.info('Wykonano zaplanowane zadanie')
 

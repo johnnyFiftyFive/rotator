@@ -9,6 +9,7 @@ blueprint = Blueprint('config_model', 'config_model')
 def get_settings():
     pass
 
+
 @blueprint.route('/settings', methods=['PUT'])
 @requires_auth
 def get_settings():
